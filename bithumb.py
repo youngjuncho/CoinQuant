@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import requests
 
@@ -33,11 +34,12 @@ class Bithumb:
         prices = [float(candle[2]) for candle in btc_candle_stick['data']][-120:]
         return pd.DataFrame(prices, columns=['price'])['price'].mean()
 
-    def calculate(self):
+    def calculate(self, days):
         gainers = []
 
         for coin in self._top20_coins:
-            old, current = self._get_prices(coin)
+            time.sleep(0.1)
+            old, current = self._get_prices(coin, days)
             if (old is None or current is None): continue
 
             gain = ((current - old) / old) * 100
@@ -47,15 +49,15 @@ class Bithumb:
 
         return [gainer['coin'] for gainer in sorted(gainers, key=lambda x: x['gain'], reverse=True)[:3]]
 
-    def _get_prices(self, coin):
+    def _get_prices(self, coin, days):
         url = f"https://api.bithumb.com/public/candlestick/{coin}_KRW/24h"
         response = requests.get(url)
         candle_stick = response.json()
         if candle_stick['status'] != '0000' or not candle_stick['data']:
             return None, None
 
-        prices = [candle[2] for candle in candle_stick['data'][-7:]]
-        if len(prices) != 7:
+        prices = [candle[2] for candle in candle_stick['data'][-days:]]
+        if len(prices) != days:
             return None, None
 
         return float(prices[0]), float(prices[-1])

@@ -1,3 +1,4 @@
+import time
 import pandas as pd
 import requests
 
@@ -31,11 +32,12 @@ class Upbit:
         prices = [float(candle['trade_price']) for candle in response.json()]
         return pd.DataFrame(prices, columns=['price'])['price'].mean()
 
-    def calculate(self):
+    def calculate(self, days):
         gainers = []
 
         for coin in self._top20_coins:
-            old, current = self._get_prices(coin)
+            time.sleep(0.1)
+            old, current = self._get_prices(coin, days)
             if (old is None or current is None): continue
 
             gain = ((current - old) / old) * 100
@@ -45,18 +47,18 @@ class Upbit:
 
         return [gainer['coin'][4:] for gainer in sorted(gainers, key=lambda x: x['gain'], reverse=True)[:3]]
 
-    def _get_prices(self, coin):
+    def _get_prices(self, coin, days):
         url = "https://api.upbit.com/v1/candles/days"
         params = {
             "market": coin,
-            "count": 8
+            "count": days
         }
         response = requests.get(url, params=params)
         if response.status_code != 200:
             return None, None
 
         candles = response.json()
-        if len(candles) < 8:
+        if len(candles) < days:
             return None, None
 
         return float(candles[-1]['trade_price']), float(candles[1]['trade_price'])
