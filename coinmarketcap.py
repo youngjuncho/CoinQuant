@@ -10,16 +10,13 @@ class Coinmarketcap:
     }
 
     def __init__(self):
-        self._client = httpx.AsyncClient()
+        self._client = httpx.AsyncClient(base_url=self._BASE_URL, timeout=10.0)
 
     async def close(self):
         await self._client.aclose()
 
-    def get_top20_coins(self):
-        return asyncio.run(self._get_top20_coins())
-
-    async def _get_top20_coins(self):
-        url = f"{self._BASE_URL}/listings/latest"
+    async def get_top20_coins(self):
+        url = "/listings/latest"
         params = {
             "start": 1,
             "convert": "USD"
@@ -36,7 +33,7 @@ class Coinmarketcap:
         if not stable_id:
             return []
 
-        url = f"{self._BASE_URL}/category"
+        url = "/category"
         params = {
             "id": stable_id
         }
@@ -46,7 +43,7 @@ class Coinmarketcap:
         return [coin['symbol'] for coin in category['data'].get('coins')]
 
     async def _get_stable_id(self):
-        url = f"{self._BASE_URL}/categories"
+        url = "/categories"
         response = await self._client.get(url, headers=self._HEADERS)
         categories = response.json()
 

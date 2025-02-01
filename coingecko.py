@@ -1,31 +1,41 @@
+import asyncio
+import httpx
 import pandas as pd
-import requests
 
 class Coingecko:
-    def __init__(self):
-        pass
+    _BASE_URL = "https://api.coingecko.com/api/v3"
 
-    def get_btc_price(self):
-        url = "https://api.coingecko.com/api/v3/simple/price"
+    def __init__(self):
+        self._client = httpx.AsyncClient(base_url=self._BASE_URL, timeout=10.0)
+
+    async def close(self):
+        await self._client.aclose()
+
+    async def get_btc_price_sma_120_days(self):
+        btc_price, sma_120_days = await asyncio.gather(self._get_btc_price(), self._get_sma_120_days())
+        return btc_price, sma_120_days
+
+    async def _get_btc_price(self):
+        url = "/simple/price"
         params = {
             "ids": "bitcoin",
             "vs_currencies": "usd",
         }
 
-        response = requests.get(url, params=params)
+        response = await self._client.get(url, params=params)
         if response.status_code != 200:
             raise Exception("Failed to fetch current BTC price.")
 
         return response.json()["bitcoin"]["usd"]
 
-    def get_120_day_sma(self):
-        url = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
+    async def _get_sma_120_days(self):
+        url = "/coins/bitcoin/market_chart"
         params = {
             "vs_currency": "usd",
             "days": "120",
         }
 
-        response = requests.get(url, params=params)
+        response = await self._client.get(url, params=params)
         if response.status_code != 200:
             raise Exception("Failed to fetch BTC historical data.")
 
