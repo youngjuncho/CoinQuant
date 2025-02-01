@@ -5,6 +5,7 @@ from upbit import Upbit
 
 coinmarketcap = Coinmarketcap()
 top20_coins = coinmarketcap.get_top20_coins()
+coinmarketcap.close()
 print(f"Coinmarketcap : Top 20 : {top20_coins}\n")
 
 Coingecko = Coingecko()
