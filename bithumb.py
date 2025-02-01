@@ -2,7 +2,6 @@ import asyncio
 import httpx
 import pandas as pd
 
-
 class Bithumb:
     _BASE_URL = "https://api.bithumb.com/public"
 

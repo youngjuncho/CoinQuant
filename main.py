@@ -28,15 +28,19 @@ async def bithumb(top20_coins):
     print(f"Bithumb[7] : {top3_for_7days}")
     print(f"Bithumb[3] : {top3_for_3days}\n")
 
-# upbit = Upbit(top20_coins)
-# print(f"Upbit : BTC price : {upbit.get_btc_price()}")
-# print(f"Upbit : 120 day SMA : {upbit.get_120_day_sma()}")
-# print(f"Upbit[7] : {upbit.calculate(7)}")
-# print(f"Upbit[3] : {upbit.calculate(3)}")
+async def upbit(top20_coins):
+    upbit = Upbit()
+    btc_price, sma_120days, top3_for_7days, top3_for_3days = await upbit.calculate(top20_coins)
+    await upbit.close()
+    print(f"Upbit : BTC price : {btc_price}")
+    print(f"Upbit : 120 day SMA : {sma_120days}")
+    print(f"Upbit[7] : {top3_for_7days}")
+    print(f"Upbit[3] : {top3_for_3days}\n")
 
 async def main():
     top20_coins = await coinmarketcap()
     await coingecko()
     await bithumb(top20_coins)
+    await upbit(top20_coins)
 
 asyncio.run(main())
