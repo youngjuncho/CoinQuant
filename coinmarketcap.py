@@ -15,7 +15,7 @@ class Coinmarketcap:
     async def close(self):
         await self._client.aclose()
 
-    async def get_top20_coins(self):
+    async def calculate(self):
         url = "/listings/latest"
         params = {
             "start": 1,

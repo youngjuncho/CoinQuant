@@ -11,9 +11,9 @@ class Coingecko:
     async def close(self):
         await self._client.aclose()
 
-    async def get_btc_price_sma_120_days(self):
-        btc_price, sma_120_days = await asyncio.gather(self._get_btc_price(), self._get_sma_120_days())
-        return btc_price, sma_120_days
+    async def calculate(self):
+        btc_price, sma_120days = await asyncio.gather(self._get_btc_price(), self._get_sma_120days())
+        return btc_price, sma_120days
 
     async def _get_btc_price(self):
         url = "/simple/price"
@@ -28,7 +28,7 @@ class Coingecko:
 
         return response.json()["bitcoin"]["usd"]
 
-    async def _get_sma_120_days(self):
+    async def _get_sma_120days(self):
         url = "/coins/bitcoin/market_chart"
         params = {
             "vs_currency": "usd",
