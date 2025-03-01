@@ -1,5 +1,4 @@
-import asyncio
-
+from asyncio import run
 from bithumb import Bithumb
 from coingecko import Coingecko
 from coinmarketcap import Coinmarketcap
@@ -43,4 +42,4 @@ async def main():
     await show_information_from_bithumb(top20_coins)
     await show_information_from_upbit(top20_coins)
 
-asyncio.run(main())
+run(main())
