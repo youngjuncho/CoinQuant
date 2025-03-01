@@ -5,21 +5,21 @@ from coingecko import Coingecko
 from coinmarketcap import Coinmarketcap
 from upbit import Upbit
 
-async def coinmarketcap():
+async def get_top20_coins_from_coinmarketcap():
     coinmarketcap = Coinmarketcap()
     top20_coins = await coinmarketcap.calculate()
     await coinmarketcap.close()
     print(f"Coinmarketcap : Top 20 : {top20_coins}\n")
     return top20_coins
 
-async def coingecko():
+async def show_information_from_coingecko():
     coingecko = Coingecko()
     btc_price, sma_120days = await coingecko.calculate()
     await coingecko.close()
     print(f"Coingecko : BTC price : {btc_price}")
     print(f"Coingecko : 120 day SMA : {sma_120days}\n")
 
-async def bithumb(top20_coins):
+async def show_information_from_bithumb(top20_coins):
     bithumb = Bithumb()
     btc_price, sma_120days, top3_for_7days, top3_for_3days = await bithumb.calculate(top20_coins)
     await bithumb.close()
@@ -28,7 +28,7 @@ async def bithumb(top20_coins):
     print(f"Bithumb[7] : {top3_for_7days}")
     print(f"Bithumb[3] : {top3_for_3days}\n")
 
-async def upbit(top20_coins):
+async def show_information_from_upbit(top20_coins):
     upbit = Upbit()
     btc_price, sma_120days, top3_for_7days, top3_for_3days = await upbit.calculate(top20_coins)
     await upbit.close()
@@ -38,9 +38,9 @@ async def upbit(top20_coins):
     print(f"Upbit[3] : {top3_for_3days}\n")
 
 async def main():
-    top20_coins = await coinmarketcap()
-    await coingecko()
-    await bithumb(top20_coins)
-    await upbit(top20_coins)
+    top20_coins = await get_top20_coins_from_coinmarketcap()
+    await show_information_from_coingecko()
+    await show_information_from_bithumb(top20_coins)
+    await show_information_from_upbit(top20_coins)
 
 asyncio.run(main())
