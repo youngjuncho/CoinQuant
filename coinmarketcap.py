@@ -46,6 +46,5 @@ class Coinmarketcap:
         url = "/categories"
         response = await self._client.get(url, headers=self._HEADERS)
         categories = response.json()
-
-        stable = next((category for category in categories.get('data', []) if category['name'] == "stablecoin"), None)
+        stable = next((category for category in categories.get('data', []) if category['name'] == "Stablecoin"), None)
         return stable['id'] if stable else None
