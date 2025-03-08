@@ -52,7 +52,7 @@ class Upbit:
         gainers = []
 
         for coin in top20:
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(0.2)
             old, current = await self._get_prices(coin, days)
             if old is None or current is None: continue
 
